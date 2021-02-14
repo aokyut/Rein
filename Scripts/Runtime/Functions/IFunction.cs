@@ -4,7 +4,7 @@ namespace Rein.Functions
 {
     public interface IFunction
     {
-        public Tensor[] Forward(Tensor[] inputs);
+        public Tensor[] Forward(params Tensor[] inputs);
         public void Backward();
     }
 }
