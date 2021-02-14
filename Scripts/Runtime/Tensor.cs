@@ -1,61 +1,63 @@
-﻿using R = System.Double;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization;
-using Rein.Utills.Exceptions;
+using R = System.Double;
+using Rein.Utils.Exceptions;
+using Rein.Functions;
 
 namespace Rein
 {
     [Serializable]
-    public class Tensor
+    public partial class Tensor
     {
-        private R[] Param, Grad;
-        private List<int> Shape;
-        private int Size;
+        // Dataは変数データ、Gradは勾配データを格納する
+        public R[] Data, Grad;
+        // Shapeはデータの形を保存している
+        public List<int> Shape;
+        public int Size;
+        // UseCountは計算グラフで使用された回数を保存することで、勾配の計算漏れを防ぐ
+        private int UseCount = 0;
+        // Backward時に呼び出す。IFunctionはRein.Functionsのinterface
+        private IFunction BackFunction;
 
+        // データの形で初期化
         public Tensor(int[] shape)
         {
             System.Random random = new System.Random();
             this.Shape = shape.ToList();
             this.Size = shape.Aggregate((now, next) => now * next);
-            this.Param = Enumerable.Range(0, this.Size).Select(_ => (R)random.NextDouble()).ToArray();
+            // 乱数で初期化
+            this.Data = Enumerable.Range(0, this.Size).Select(_ => (R)random.NextDouble()).ToArray();
             this.Grad = new R[this.Size];
         }
 
+        // データを直接入力して初期化
+        public Tensor(R[] data)
+        {
+            this.Shape = new List<int>(1){ data.Length };
+            this.Size = data.Length;
+            this.Data = data;
+            this.Grad = new R[this.Size];
+        }
+
+        // データとshapeで初期化
         public Tensor(R[] data, int[] shape)
         {
             this.Shape = shape.ToList();
             this.Size = shape.Aggregate((now, next) => now * next);
+            // データ自体のサイズとshapeから得られるサイズが異なる時にエラーを投げる。
             if(data.Length != this.Size) throw new InvalidSizeException();
-            this.Param = data;
+            this.Data = data;
             this.Grad = new R[this.Size];
         }
 
-        // 演算子のオーバーロード
-        public static Tensor operator +(Tensor tensor1, Tensor tensor2)
+        public void Backward()
         {
-            return null;
-        }
-
-        public static Tensor operator -(Tensor tensor1, Tensor tensor2)
-        {
-            return null;
-        }
-
-        public static Tensor operator -(Tensor tensor)
-        {
-            return null;
-        }
-
-        public static Tensor operator *(Tensor tensor1, Tensor tensor2)
-        {
-            return null;
-        }
-
-        public static Tensor operator /(Tensor tensor1, Tensor tensor2)
-        {
-            return null;
+            this.UseCount--;
+            // 他の関数に対しても出力している場合にはまだ勾配を計算しない
+            if(this.UseCount != 0)return;
+            this.BackFunction.Backward();
         }
     }
 }

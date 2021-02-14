@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Rein.Utills.Exceptions
+namespace Rein.Utils.Exceptions
 {
     [Serializable]
     public class InvalidSizeException: Exception
