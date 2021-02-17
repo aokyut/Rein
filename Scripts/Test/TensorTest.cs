@@ -12,7 +12,10 @@ namespace Rein.Tests
         public TensorTest(): base("TensorTest")
         {
             this.Tests = new List<Action>(){
-
+                this.TestAddition,
+                this.TestSubstruction,
+                this.TestMultiplication,
+                this.TestDivision
             };
 
 
