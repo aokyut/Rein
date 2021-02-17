@@ -22,7 +22,7 @@ namespace Rein.Functions.Arithmetic{
 
         protected override void BinaryBackward(){
             for(int i = 0; i < this.Left.Size; i++){
-                this.Left.Grad[i] -= this.Out.Grad[i];
+                this.Left.Grad[i] += this.Out.Grad[i];
                 this.Right.Grad[i] -= this.Out.Grad[i];
             }
         }
