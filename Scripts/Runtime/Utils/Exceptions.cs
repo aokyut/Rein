@@ -28,4 +28,29 @@ namespace Rein.Utils.Exceptions
         {
         }
     }
+
+    public class InvalidLengthException: Exception
+    {
+        public InvalidLengthException()
+        : base()
+        {
+        }
+
+        public InvalidLengthException(string message)
+            : base(message)
+        {
+        }
+
+        public InvalidLengthException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        //逆シリアル化コンストラクタ。このクラスの逆シリアル化のために必須。
+        //アクセス修飾子をpublicにしないこと！（詳細は後述）
+        protected InvalidLengthException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+    }
 }
