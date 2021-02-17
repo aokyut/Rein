@@ -12,7 +12,10 @@ namespace Rein.Tests
         public TensorTest(): base("TensorTest")
         {
             this.Tests = new List<Action>(){
-
+                this.TestAddition,
+                this.TestSubstruction,
+                this.TestMultiplication,
+                this.TestDivision
             };
 
 
@@ -187,8 +190,8 @@ namespace Rein.Tests
         private void _CheckTensorEqual(Tensor expected, Tensor actual, string testName="")
         {
             Debug.Assert(
-                StructuralComparisons.Equals(expected.Data, actual.Data),
-                $"[{testName}]Tensor Equal Check failed expected:{expected.Data}, actual:{actual.Data}"
+                !StructuralComparisons.Equals(expected.Data, actual.Data),
+                $"[{testName}]Tensor Equal Check failed expected:{this.DebugArray(expected.Data)}, actual:{this.DebugArray(actual.Data)}"
             );
         }
     }
