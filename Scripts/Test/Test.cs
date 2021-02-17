@@ -18,5 +18,15 @@ namespace Rein.Tests
 
             Console.WriteLine($"{Name} Succeed!");
         }
+
+        protected string DebugArray<T>(T[] array) where T: IComparable{
+            string str = "";
+            foreach(var item in array){
+                str += item.ToString();
+                str += ", ";
+            }
+
+            return str;
+        }
     }
 }
