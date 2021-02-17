@@ -9,6 +9,12 @@ namespace Rein.Functions
         
         protected Func<Tensor[], Tensor[]> FunctionForward;
         protected Action FunctionBackward;
+        
+        protected string Name;
+
+        public BaseFunction(string name){
+            this.Name = name;
+        }
 
         public Tensor[] Forward(params Tensor[] inputs)
         {
