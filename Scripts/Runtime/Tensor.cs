@@ -42,11 +42,13 @@ namespace Rein
         }
 
         // データとshapeで初期化
-        public Tensor(R[] data, int[] shape)
+        public Tensor(R[] data, int[] shape):this(data, shape.ToList())
         {
-            this.Shape = shape.ToList();
+        }
+
+        public Tensor(R[] data, List<int> shape){
+            this.Shape = shape;
             this.Size = shape.Aggregate((now, next) => now * next);
-            // データ自体のサイズとshapeから得られるサイズが異なる時にエラーを投げる。
             if(data.Length != this.Size) throw new InvalidSizeException();
             this.Data = data;
             this.Grad = new R[this.Size];
