@@ -18,7 +18,7 @@ namespace Rein
 
         public static Tensor operator -(Tensor tensor)
         {
-            return null;
+            return Functions.Math.Minus(tensor);
         }
 
         public static Tensor operator *(Tensor tensor1, Tensor tensor2)

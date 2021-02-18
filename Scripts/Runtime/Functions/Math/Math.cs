@@ -4,7 +4,7 @@ namespace Rein.Functions{
     public static class Math{
         
         // -X
-        public static Tensor[] Minus(Tensor[] In){
+        public static Tensor Minus(Tensor In){
             return new Lambda(
                 "Minus",
                 (x) => -x,
@@ -13,7 +13,7 @@ namespace Rein.Functions{
         }
 
         // ReLU
-        public static Tensor[] ReLU(Tensor[] In){
+        public static Tensor ReLU(Tensor In){
             return new Lambda(
                 "ReLU",
                 (x) => x > 0 ? x : 0,
@@ -22,7 +22,7 @@ namespace Rein.Functions{
         }
 
         // Exponential
-        public static Tensor[] Exp(Tensor[] In){
+        public static Tensor Exp(Tensor In){
             return new Lambda(
                 "Exp",
                 (x) => System.Math.Exp(x),
@@ -31,7 +31,7 @@ namespace Rein.Functions{
         }
 
         // Log
-        public static Tensor[] Log(Tensor[] In){
+        public static Tensor Log(Tensor In){
             return new Lambda(
                 "Log_e",
                 (x) => System.Math.Log(x),
