@@ -1,5 +1,6 @@
 using System.Linq;
 using R = System.Double;
+using System.Collections.Generic;
 
 namespace Rein.Functions.Arithmetic{
     public class Mul: BinaryFunction{
@@ -16,7 +17,7 @@ namespace Rein.Functions.Arithmetic{
 
             return new Tensor(
                 data,
-                left.Shape
+                new List<int>(left.Shape)
             );
         }
 
