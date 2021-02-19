@@ -1,5 +1,6 @@
 using R = System.Double;
 using System;
+using System.Collections.Generic;
 
 namespace Rein.Functions{
     public class Lambda: UnaryFunction{
@@ -17,7 +18,7 @@ namespace Rein.Functions{
                 data[i] = this.LambdaForward(this.In.Data[i]);
             }
 
-            return new Tensor(data, this.In.Shape);
+            return new Tensor(data, new List<int>(this.In.Shape));
         }
 
         protected override void UnaryBackward()
