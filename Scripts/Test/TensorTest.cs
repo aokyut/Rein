@@ -267,7 +267,7 @@ namespace Rein.Tests
                     sw1.Stop();
 
                     sw2.Start();
-                    Tensor out2 = new Rein.Functions.DotParallel().Forward(left, right);
+                    Tensor out2 = new Rein.Functions.Dot_test().Forward(left, right);
                     sw2.Stop();
 
                     System.Threading.Thread.Sleep(100);
