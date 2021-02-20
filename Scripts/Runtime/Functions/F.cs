@@ -1,8 +1,7 @@
-using System;
+using Rein.Functions;
 
-namespace Rein.Functions{
-    public static class Math{
-        
+namespace Rein{
+    public static class F{
         // -X
         public static Tensor Minus(Tensor In){
             return new Lambda(

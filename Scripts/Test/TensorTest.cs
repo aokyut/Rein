@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using R = System.Double;
 using System.Diagnostics;
-using Rein;
+using Rein.Functions.Arithmetic;
 
 namespace Rein.Tests
 {
@@ -228,7 +228,7 @@ namespace Rein.Tests
             
             foreach (var (ten1, ten2, ten3, r1, r2) in tests)
             {
-                Tensor resultTensor = new Rein.Functions.Dot().Forward(ten1, ten2);
+                Tensor resultTensor = new Dot().Forward(ten1, ten2);
                 resultTensor.Grad = new R[]{
                     1, 1, 1, 1, 1, 1
                 };
@@ -263,11 +263,11 @@ namespace Rein.Tests
                     );
 
                     sw1.Start();
-                    Tensor out1 = new Rein.Functions.Dot().Forward(left, right);
+                    Tensor out1 = new Dot().Forward(left, right);
                     sw1.Stop();
 
                     sw2.Start();
-                    Tensor out2 = new Rein.Functions.Dot_test().Forward(left, right);
+                    Tensor out2 = new DotParallel().Forward(left, right);
                     sw2.Stop();
 
                     System.Threading.Thread.Sleep(100);

@@ -3,7 +3,7 @@ using R = System.Double;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Rein.Functions{
+namespace Rein.Functions.Arithmetic{
     public class Dot: BinaryFunction{
         public Dot():base("Dot"){
 
