@@ -18,8 +18,14 @@ namespace Rein.Functions
 
         public Tensor[] Forward(params Tensor[] inputs)
         {
+            foreach (Tensor input in inputs){
+                input.UseCount++;
+            }
             this.Inputs = inputs;
             this.Outputs = this.FunctionForward(inputs);
+            foreach (Tensor output in this.Outputs){
+                output.BackFunction = this;
+            }
             this.UseCount = this.Outputs.Length;
 
             return this.Outputs;

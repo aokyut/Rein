@@ -12,10 +12,11 @@ namespace Rein.Tests
         public TensorTest(): base("TensorTest")
         {
             this.Tests = new List<Action>(){
-                this.TestAddition,
-                this.TestSubstruction,
-                this.TestMultiplication,
-                this.TestDivision
+                // this.TestAddition,
+                // this.TestSubstruction,
+                // this.TestMultiplication,
+                // this.TestDivision,
+                this.TestDot,
             };
 
 
@@ -188,18 +189,19 @@ namespace Rein.Tests
         }
 
         public void TestDot(){
-            var tests = new (Tensor, Tensor, Tensor)[] {
+            var tests = new (Tensor, Tensor, Tensor, R[], R[])[] {
                 (
                     new Tensor(
                         new R[]{
                             2, 5,
-                            1, 4
+                            1, 4,
+                            -1, 3
                         },
-                        new int[]{2, 2}
+                        new int[]{3, 2}
                     ),
                     new Tensor(
                         new R[]{
-                            1, 3,
+                            1, 3, 
                             8, -2
                         },
                         new int[]{2, 2}
@@ -207,13 +209,38 @@ namespace Rein.Tests
                     new Tensor(
                         new R[]{
                             42, -4,
-                            33, -5
+                            33, -5,
+                            23, -9
                         },
-                        new int[]{2, 2}
-                    )
+                        new int[]{3, 2}
+                    ),
+                    new R[]{
+                        4, 6,
+                        4, 6,
+                        4, 6
+                    },
+                    new R[]{
+                        2, 2,
+                        12, 12
+                    }
                 ),
             };
             
+            foreach (var (ten1, ten2, ten3, r1, r2) in tests)
+            {
+                Tensor resultTensor = new Rein.Functions.Dot().Forward(ten1, ten2);
+                resultTensor.Grad = new R[]{
+                    1, 1, 1, 1, 1, 1
+                };
+
+                resultTensor.UseCount = 1;
+                resultTensor.Backward();
+                
+                _CheckTensorEqual(ten3, resultTensor, "TestDot");
+                _CheckArrayEqual(ten1.Grad, r1, "TestDot-Grad1");
+                _CheckArrayEqual(ten2.Grad, r2, "TestDot-Grad2");
+            }
+            Console.WriteLine("TestDot");
         }
 
         public void ProfileDot(){
@@ -229,10 +256,10 @@ namespace Rein.Tests
                 sw2.Reset();
                 for (int i=0; i < loopNum; i++){
                     Tensor left = new Tensor(
-                        new int[2]{size, size}
+                        new int[2]{size, size + 10}
                     );
                     Tensor right = new Tensor(
-                        new int[2]{size, size}
+                        new int[2]{size + 10, size}
                     );
 
                     sw1.Start();
@@ -269,10 +296,11 @@ namespace Rein.Tests
             for (int i = 0; i < expected.Length; i++){
                 double ex = Math.Abs(expected[i]);
                 double ac = Math.Abs(actual[i]);
-                Debug.Assert(
-                    ex * 0.9999 <= ac && ac <= ex * 1.0001,
-                    "hoge"
-                );
+                if (ex * 0.9999 <= ac && ac <= ex * 1.0001){
+                    continue;
+                }else{
+                    return false;
+                }
             }
             return true;
         }

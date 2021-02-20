@@ -17,9 +17,9 @@ namespace Rein
         public List<int> Shape;
         public int Size;
         // UseCountは計算グラフで使用された回数を保存することで、勾配の計算漏れを防ぐ
-        private int UseCount = 0;
+        public int UseCount = 0;
         // Backward時に呼び出す。IFunctionはRein.Functionsのinterface
-        private IFunction BackFunction;
+        public IFunction BackFunction;
 
         // データの形で初期化
         public Tensor(int[] shape)
