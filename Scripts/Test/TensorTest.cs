@@ -12,11 +12,13 @@ namespace Rein.Tests
         public TensorTest(): base("TensorTest")
         {
             this.Tests = new List<Action>(){
-                // this.TestAddition,
-                // this.TestSubstruction,
-                // this.TestMultiplication,
-                // this.TestDivision,
+                this.TestAddition,
+                this.TestSubstruction,
+                this.TestMultiplication,
+                this.TestDivision,
                 this.TestDot,
+                this.TestSum,
+                this.TestSumGrad,
             };
 
 
@@ -241,6 +243,108 @@ namespace Rein.Tests
                 _CheckArrayEqual(ten2.Grad, r2, "TestDot-Grad2");
             }
             Console.WriteLine("TestDot");
+        }
+
+        public void TestSum(){
+            
+            Tensor input = new Tensor(
+                new R[]{
+                    -29, -28, -27, -26, -25,
+                    -24, -23, -22, -21, -20,
+                    -19, -18, -17, -16, -15,
+                    -14, -13, -12, -11, -10,
+
+                    -9, -8, -7, -6, -5,
+                    -4, -3, -2, -1, 0,
+                    1, 2, 3, 4, 5,
+                    6, 7, 8, 9, 10,
+
+                    11, 12, 13, 14, 15,
+                    16, 17, 18, 19, 20,
+                    21, 22, 23, 24, 25,
+                    26, 27, 28, 29, 30
+                }, new int[3]{3, 4, 5}
+            );
+
+            // axis = 2
+            R[] out1 = new R[]{
+                -135, -110, -85, -60,
+                -35, -10, 15, 40,
+                65, 90, 115, 140
+            };
+
+            // axis = 1
+            R[] out2 = new R[]{
+                -86, -82, -78, -74, 70,
+                -6, -2, 2, 6, 10,
+                74, 78, 82, 86, 90
+            };
+
+            // axis = 0 2
+            R[] out3 = new R[]{
+                -105, -30, 45, 120
+            };
+
+            Tensor Out1 = new Rein.Functions.Set.Sum(new List<int>(){2}).Forward(input);
+            Tensor Out2 = new Rein.Functions.Set.Sum(new List<int>(){1}).Forward(input);
+            Tensor Out3 = new Rein.Functions.Set.Sum(new List<int>(){0, 2}).Forward(input);
+
+            this._CheckArrayEqual(out1, Out1.Data, "TestSum");
+            this._CheckArrayEqual(out2, Out2.Data, "TestSum");
+            this._CheckArrayEqual(out3, Out3.Data, "TestSum");
+
+            Console.WriteLine("TestSum");
+        }
+        public void TestSumGrad(){
+            
+            Tensor input = new Tensor(
+                new R[]{
+                    -29, -28, -27, -26, -25,
+                    -24, -23, -22, -21, -20,
+                    -19, -18, -17, -16, -15,
+                    -14, -13, -12, -11, -10,
+
+                    -9, -8, -7, -6, -5,
+                    -4, -3, -2, -1, 0,
+                    1, 2, 3, 4, 5,
+                    6, 7, 8, 9, 10,
+
+                    11, 12, 13, 14, 15,
+                    16, 17, 18, 19, 20,
+                    21, 22, 23, 24, 25,
+                    26, 27, 28, 29, 30
+                }, new int[3]{3, 4, 5}
+            );
+
+            // axis = 0 2
+            R[] grad = new R[]{
+                1 ,1, 1, 1, 1,
+                2, 2, 2, 2, 2,
+                3, 3, 3, 3, 3,
+                4, 4, 4, 4, 4,
+
+                1 ,1, 1, 1, 1,
+                2, 2, 2, 2, 2,
+                3, 3, 3, 3, 3,
+                4, 4, 4, 4, 4,
+
+                1 ,1, 1, 1, 1,
+                2, 2, 2, 2, 2,
+                3, 3, 3, 3, 3,
+                4, 4, 4, 4, 4,
+            };
+
+            Tensor Out1 = new Rein.Functions.Set.Sum(new List<int>(){0, 2}).Forward(input);
+
+            Out1.Grad = new R[]{1, 2, 3, 4};
+            Out1.UseCount++;
+
+            Out1.Backward();
+
+
+            this._CheckArrayEqual(grad, input.Grad, "TestSumGrad");
+
+            Console.WriteLine("TestSumGrad");
         }
 
         public void ProfileDot(){
