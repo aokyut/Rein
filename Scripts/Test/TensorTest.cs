@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using R = System.Double;
 using System.Diagnostics;
-using Rein;
+using Rein.Functions.Arithmetic;
 
 namespace Rein.Tests
 {
@@ -15,7 +15,8 @@ namespace Rein.Tests
                 this.TestAddition,
                 this.TestSubstruction,
                 this.TestMultiplication,
-                this.TestDivision
+                this.TestDivision,
+                this.TestDot,
             };
 
 
@@ -41,7 +42,7 @@ namespace Rein.Tests
                 ),
                 (
                     new Tensor(
-                        new R[] {3.2, 4.5, 5.1, 2/3},
+                        new R[] {3.2, 4.5, 5.1, 2.0/3.0},
                         new int[] {2, 2}
                     ),
                     new Tensor(
@@ -49,7 +50,7 @@ namespace Rein.Tests
                         new int[] {2, 2}
                     ),
                     new Tensor(
-                        new R[] {19.2, -3.5, 9.1, 8/3},
+                        new R[] {19.2, -3.5, 9.1, 8.0/3.0},
                         new int[] {2, 2}
                     )
                 )
@@ -82,15 +83,15 @@ namespace Rein.Tests
                 ),
                 (
                     new Tensor(
-                        new R[] {3.2, 4.5, 5.1, 2/3},
+                        new R[] {3.2, 4.5, 5.1, 2.0/3.0},
                         new int[] {2, 2}
                     ),
                     new Tensor(
-                        new R[] {16, -8, 4, 2},
+                        new R[] {16, -8, 4, 2.0},
                         new int[] {2, 2}
                     ),
                     new Tensor(
-                        new R[] {12.8, 12.5, 1.1, -4/3},
+                        new R[] {-12.8, 12.5, 1.1, -4.0/3.0},
                         new int[] {2, 2}
                     )
                 )
@@ -123,7 +124,7 @@ namespace Rein.Tests
                 ),
                 (
                     new Tensor(
-                        new R[] {3.2, 4.5, 5.1, 2/3},
+                        new R[] {3.2, 4.5, 5.1, 2.0/3.0},
                         new int[] {2, 2}
                     ),
                     new Tensor(
@@ -131,7 +132,7 @@ namespace Rein.Tests
                         new int[] {2, 2}
                     ),
                     new Tensor(
-                        new R[] {22.4, -36, 20.4, 4/3},
+                        new R[] {22.4, -36, 20.4, 4.0/3.0},
                         new int[] {2, 2}
                     )
                 )
@@ -164,7 +165,7 @@ namespace Rein.Tests
                 ),
                 (
                     new Tensor(
-                        new R[] {3.2, 4.5, 5.1, 2/3},
+                        new R[] {3.2, 4.5, 5.1, 2.0/3.0},
                         new int[] {2, 2}
                     ),
                     new Tensor(
@@ -172,7 +173,7 @@ namespace Rein.Tests
                         new int[] {2, 2}
                     ),
                     new Tensor(
-                        new R[] {3.2/16, -4.5/8, 5.1/4, 1/3},
+                        new R[] {3.2/16.0, -4.5/8.0, 5.1/4.0, 1.0/3.0},
                         new int[] {2, 2}
                     )
                 )
@@ -187,12 +188,95 @@ namespace Rein.Tests
             Console.WriteLine("TestDivision");
         }
 
-        private void _CheckTensorEqual(Tensor expected, Tensor actual, string testName="")
-        {
-            Debug.Assert(
-                !StructuralComparisons.Equals(expected.Data, actual.Data),
-                $"[{testName}]Tensor Equal Check failed expected:{this.DebugArray(expected.Data)}, actual:{this.DebugArray(actual.Data)}"
-            );
+        public void TestDot(){
+            var tests = new (Tensor, Tensor, Tensor, R[], R[])[] {
+                (
+                    new Tensor(
+                        new R[]{
+                            2, 5,
+                            1, 4,
+                            -1, 3
+                        },
+                        new int[]{3, 2}
+                    ),
+                    new Tensor(
+                        new R[]{
+                            1, 3, 
+                            8, -2
+                        },
+                        new int[]{2, 2}
+                    ),
+                    new Tensor(
+                        new R[]{
+                            42, -4,
+                            33, -5,
+                            23, -9
+                        },
+                        new int[]{3, 2}
+                    ),
+                    new R[]{
+                        4, 6,
+                        4, 6,
+                        4, 6
+                    },
+                    new R[]{
+                        2, 2,
+                        12, 12
+                    }
+                ),
+            };
+            
+            foreach (var (ten1, ten2, ten3, r1, r2) in tests)
+            {
+                Tensor resultTensor = new Dot().Forward(ten1, ten2);
+                resultTensor.Grad = new R[]{
+                    1, 1, 1, 1, 1, 1
+                };
+
+                resultTensor.UseCount = 1;
+                resultTensor.Backward();
+                
+                _CheckTensorEqual(ten3, resultTensor, "TestDot");
+                _CheckArrayEqual(ten1.Grad, r1, "TestDot-Grad1");
+                _CheckArrayEqual(ten2.Grad, r2, "TestDot-Grad2");
+            }
+            Console.WriteLine("TestDot");
+        }
+
+        public void ProfileDot(){
+            Stopwatch sw1 = new Stopwatch();
+            Stopwatch sw2 = new Stopwatch();
+            // int[] shape = new int[2]{ , 300 };
+            int loopNum = 10;
+            int[] sizes = new int[]{ 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 };
+
+            foreach (int size in sizes){
+                // Console.WriteLine(size);
+                sw1.Reset();
+                sw2.Reset();
+                for (int i=0; i < loopNum; i++){
+                    Tensor left = new Tensor(
+                        new int[2]{size, size + 10}
+                    );
+                    Tensor right = new Tensor(
+                        new int[2]{size + 10, size}
+                    );
+
+                    sw1.Start();
+                    Tensor out1 = new Dot().Forward(left, right);
+                    sw1.Stop();
+
+                    sw2.Start();
+                    Tensor out2 = new DotParallel().Forward(left, right);
+                    sw2.Stop();
+
+                    System.Threading.Thread.Sleep(100);
+                }
+
+                // Console.WriteLine($"交換+アンロー：{sw1.ElapsedMilliseconds}/{loopNum}ms");
+                // Console.WriteLine($"交換：{sw2.ElapsedMilliseconds}/{loopNum}ms");
+                Console.WriteLine($"|{size}|{sw1.ElapsedMilliseconds}ms|{sw2.ElapsedMilliseconds}ms|");
+            }
         }
     }
 }

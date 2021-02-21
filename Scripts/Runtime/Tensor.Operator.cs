@@ -1,5 +1,6 @@
 ﻿using Rein.Functions.Arithmetic;
 using Rein.Utils.Exceptions;
+using Rein.Functions.Set;
 
 namespace Rein
 {
@@ -18,7 +19,7 @@ namespace Rein
 
         public static Tensor operator -(Tensor tensor)
         {
-            return null;
+            return F.Minus(tensor);
         }
 
         public static Tensor operator *(Tensor tensor1, Tensor tensor2)
@@ -35,6 +36,34 @@ namespace Rein
         {
             if(!(tensor1.Length == 1))throw new InvalidLengthException();
             return tensor1[0];
+        }
+
+        public Tensor Sum(int axis, bool keepDim = true){
+            return new Sum(axis, keepDim).Forward(this);
+        }
+        public Tensor Sum(bool keepDim = true){
+            return new SumAll(keepDim).Forward(this);
+        }
+
+        public Tensor Mean(int axis, bool keepDim = true){
+            return new Mean(axis, keepDim).Forward(this);
+        }
+        public Tensor Mean(bool keepDim = true){
+            return new MeanAll(keepDim).Forward(this);
+        }
+
+        public Tensor Max(int axis, bool keepDim = true){
+            return new Max(axis, keepDim).Forward(this);
+        }
+        public Tensor Max(bool keepDim = true){
+            return new MaxAll(keepDim).Forward(this);
+        }
+
+        public Tensor Min(int axis, bool keepDim = true){
+            return new Min(axis, keepDim).Forward(this);
+        }
+        public Tensor Min(bool keepDim = true){
+            return new MinAll(keepDim).Forward();
         }
     }
 }
