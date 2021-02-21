@@ -81,9 +81,9 @@ namespace Rein.Functions.Arithmetic{
 
             for (i=0; i < N; i++){
 
-                for(j=0; j < L - 3; j++){
+                for(j=0; j < L; j++){
                     R sum = 0;
-                    for(k=0; k < M; k+=4){
+                    for(k=0; k < M - 3; k+=4){
                         sum += this.Out.Grad[i * M + k] * this.Right.Data[j * M + k]
                             + this.Out.Grad[i * M + k + 1] * this.Right.Data[j * M + k + 1]
                             + this.Out.Grad[i * M + k + 2] * this.Right.Data[j * M + k + 2]
