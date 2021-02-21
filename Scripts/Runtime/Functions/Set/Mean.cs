@@ -4,10 +4,10 @@ using System.Linq;
 using System;
 
 namespace Rein.Functions.Set{
-    public class Sum: UnaryFunction{
+    public class Mean: UnaryFunction{
         private List<int> Axes;
         private bool KeepDim;
-        public Sum(List<int> axes, bool keepDim = true):base("Sum"){
+        public Mean(List<int> axes, bool keepDim = true):base("Sum"){
             this.Axes = axes;
             this.Axes.Sort((a, b) => b - a);
             this.KeepDim = keepDim;
@@ -29,7 +29,7 @@ namespace Rein.Functions.Set{
                 for (int i = 0; i * offset < size; i++){
                     for (int j = 0; j < offset; j+=step){
                         for (int k = 0; k < step; k++){
-                            nextData[step * i + k] += data[offset * i + j + k];
+                            nextData[step * i + k] += data[offset * i + j + k] / repNum;
                         }
                     }
                 }
@@ -51,7 +51,9 @@ namespace Rein.Functions.Set{
         protected override void UnaryBackward(){
 
             List<int> shape = new List<int>(this.In.Shape);
+            int meanNum = 1;
             foreach (int axis in this.Axes){
+                meanNum *= shape[axis];
                 shape[axis] = 1;
             }
 
@@ -76,7 +78,7 @@ namespace Rein.Functions.Set{
             }
 
             for (int i = 0; i < this.In.Size; i++){
-                this.In.Grad[i] += grad[i];
+                this.In.Grad[i] += grad[i] / meanNum;
             }
         }
     }
