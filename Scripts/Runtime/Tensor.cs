@@ -56,6 +56,8 @@ namespace Rein
 
         public void Backward()
         {
+            // BackFunctionが存在しない時は終了
+            if(this.BackFunction == null)return;
             this.UseCount--;
             // 他の関数に対しても出力している場合にはまだ勾配を計算しない
             if(this.UseCount != 0)return;
