@@ -1,4 +1,7 @@
 using Rein.Functions;
+using Rein.Functions.Set;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rein{
     public static class F{
@@ -37,5 +40,21 @@ namespace Rein{
                 (x) => 1 / x
             ).Forward(In);
         }
+
+        // SetFunction
+        public static Tensor Sum(Tensor tensor){
+            return tensor.Sum();
+        }
+        public static Tensor Mean(Tensor tensor){
+            return tensor.Mean();
+        }
+        public static Tensor Max(Tensor tensor){
+            return tensor.Max();
+        }
+        public static Tensor Min(Tensor tensor){
+            return tensor.Min();
+        }
+
+
     }
 }
