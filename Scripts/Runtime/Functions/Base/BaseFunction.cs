@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rein.Functions
 {
     public abstract class BaseFunction: IFunction
     {
         protected Tensor[] Inputs, Outputs;
+        public Tensor[] Params = new Tensor[]{};
         protected int UseCount = 0;
         
         protected Func<Tensor[], Tensor[]> FunctionForward;
@@ -24,7 +26,7 @@ namespace Rein.Functions
             this.Inputs = inputs;
             this.Outputs = this.FunctionForward(inputs);
             foreach (Tensor output in this.Outputs){
-                output.BackFunction = this;
+                output.BackFunction ??= this;
             }
             this.UseCount = this.Outputs.Length;
 
@@ -38,6 +40,12 @@ namespace Rein.Functions
             this.FunctionBackward();
             foreach(Tensor input in this.Inputs){
                 input.Backward();
+            }
+        }
+
+        public Tensor[] Parameters{
+            get{
+                return this.Params;
             }
         }
     }

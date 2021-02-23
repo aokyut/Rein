@@ -6,5 +6,7 @@ namespace Rein.Functions
     {
         public Tensor[] Forward(params Tensor[] inputs);
         public void Backward();
+
+        public Tensor[] Parameters {get; }
     }
 }
