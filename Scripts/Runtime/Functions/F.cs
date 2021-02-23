@@ -1,7 +1,6 @@
 using Rein.Functions;
-using Rein.Functions.Set;
-using System.Collections.Generic;
-using System.Linq;
+using Rein.Functions.Arithmetic;
+using Rein.Functions.Layer;
 
 namespace Rein{
     public static class F{
@@ -41,6 +40,11 @@ namespace Rein{
             ).Forward(In);
         }
 
+        // Dot
+        public static Tensor Dot(Tensor left, Tensor right){
+            return new Dot().Forward(left, right);
+        }
+
         // SetFunction
         public static Tensor Sum(Tensor tensor){
             return tensor.Sum();
@@ -55,6 +59,9 @@ namespace Rein{
             return tensor.Min();
         }
 
-
+        // Layer
+        public static Tensor Linear(Tensor tensor, int inputSize, int outputSize, bool bias = true){
+            return new Linear(inputSize, outputSize, bias).Forward(tensor);
+        }
     }
 }
