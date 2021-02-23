@@ -12,6 +12,7 @@ namespace Rein.Functions.Arithmetic{
         protected override Tensor BinaryForward(Tensor left, Tensor right)
         {
             int N = left.Size / left.Shape.Last();
+
             int M= right.Shape[1];
             int L = right.Shape[0];
             R[] data = new R[N * M];
@@ -61,7 +62,7 @@ namespace Rein.Functions.Arithmetic{
                     }
                     
                     for(; j < M; j++){
-                        data[i*L + j] += left.Data[i*L + k] * right.Data[k*L + j];
+                        data[i*M + j] += left.Data[i*L + k] * right.Data[k*M + j];
                     }
                 }
             }
