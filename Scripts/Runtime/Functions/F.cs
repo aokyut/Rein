@@ -1,6 +1,7 @@
 using Rein.Functions;
 using Rein.Functions.Arithmetic;
 using Rein.Functions.Layer;
+using R = System.Double;
 
 namespace Rein{
     public static class F{
@@ -10,6 +11,29 @@ namespace Rein{
                 "Minus",
                 (x) => -x,
                 (x) => -1
+            ).Forward(In);
+        }
+
+        public static Tensor AddConst(Tensor In, R r){
+            return new Lambda(
+                "AddConst",
+                (x) => x + r,
+                (x) => 1
+            ).Forward(In);
+        }
+        public static Tensor MulConst(Tensor In, R r){
+            return new Lambda(
+                "MulConst",
+                (x) => x * r,
+                (x) => r
+            ).Forward(In);
+        }
+
+        public static Tensor DivConst(Tensor In, R r){
+            return new Lambda(
+                "DivCosnt",
+                (x) => r / x,
+                (x) => - r / (x * x)
             ).Forward(In);
         }
 
