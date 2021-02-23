@@ -39,7 +39,7 @@ namespace Rein.Functions
             if (this.UseCount != 0)return;
             this.FunctionBackward();
             foreach(Tensor input in this.Inputs){
-                input.Backward();
+                input.BackwardChain();
             }
         }
 
