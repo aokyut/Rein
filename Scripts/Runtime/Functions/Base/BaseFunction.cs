@@ -43,7 +43,7 @@ namespace Rein.Functions
             }
         }
 
-        public Tensor[] GetParams{
+        public Tensor[] Parameters{
             get{
                 return this.Params;
             }
