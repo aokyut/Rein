@@ -10,10 +10,6 @@ namespace Rein
             return new Repeat(dim, rep).Forward(this);
         }
 
-        public Tensor Detach(){
-            return new Detach().Forward(this);
-        }
-
         public Tensor Squeeze(int dim){
             return new Squeeze(dim).Forward(this);
         }

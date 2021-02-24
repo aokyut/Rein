@@ -5,6 +5,8 @@ namespace Rein.Functions
     public interface IFunction
     {
         public Tensor[] Forward(params Tensor[] inputs);
+
+        public Tensor[] Predict(params Tensor[] inputs);
         public void Backward();
 
         public Tensor[] Parameters {get; }

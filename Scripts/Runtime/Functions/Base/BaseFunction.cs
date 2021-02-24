@@ -33,6 +33,11 @@ namespace Rein.Functions
             return this.Outputs;
         }
 
+        // 勾配を保存しない
+        public virtual Tensor[] Predict(params Tensor[] inputs){
+            return this.FunctionForward(inputs);
+        }
+
         public virtual void Backward()
         {
             this.UseCount--;
