@@ -18,7 +18,7 @@ namespace Rein.Functions
             this.Name = name;
         }
 
-        public Tensor[] Forward(params Tensor[] inputs)
+        public virtual Tensor[] Forward(params Tensor[] inputs)
         {
             foreach (Tensor input in inputs){
                 input.UseCount++;
@@ -33,13 +33,18 @@ namespace Rein.Functions
             return this.Outputs;
         }
 
-        public void Backward()
+        // 勾配を保存しない
+        public virtual Tensor[] Predict(params Tensor[] inputs){
+            return this.FunctionForward(inputs);
+        }
+
+        public virtual void Backward()
         {
             this.UseCount--;
             if (this.UseCount != 0)return;
             this.FunctionBackward();
             foreach(Tensor input in this.Inputs){
-                input.Backward();
+                input.BackwardChain();
             }
         }
 

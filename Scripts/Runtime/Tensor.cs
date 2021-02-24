@@ -54,13 +54,19 @@ namespace Rein
             this.Grad = new R[this.Size];
         }
 
-        public void Backward()
+        public void BackwardChain()
         {
             // BackFunctionが存在しない時は終了
             if(this.BackFunction == null)return;
             this.UseCount--;
             // 他の関数に対しても出力している場合にはまだ勾配を計算しない
             if(this.UseCount != 0)return;
+            this.BackFunction.Backward();
+        }
+
+        public void Backward(){
+            if (this.Size > 1)throw new InvalidSizeException($"expect size : 1, but actual : {this.Size}");
+            this.Grad[0] = 1.0;
             this.BackFunction.Backward();
         }
     }

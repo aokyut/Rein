@@ -1,6 +1,7 @@
 ﻿using Rein.Functions.Arithmetic;
 using Rein.Utils.Exceptions;
 using Rein.Functions.Set;
+using R = System.Double;
 
 namespace Rein
 {
@@ -12,9 +13,24 @@ namespace Rein
             return new Add().Forward(tensor1, tensor2);
         }
 
+        public static Tensor operator +(Tensor tensor, R r){
+            return F.AddConst(tensor, r);
+        }
+        public static Tensor operator +(R r, Tensor tensor){
+            return F.AddConst(tensor, r);
+        }
+
         public static Tensor operator -(Tensor tensor1, Tensor tensor2)
         {
             return new Sub().Forward(tensor1, tensor2);
+        }
+        public static Tensor operator -(Tensor tensor, R r)
+        {
+            return (-tensor) + r;
+        }
+        public static Tensor operator -(R r, Tensor tensor)
+        {
+            return (-tensor) + r;
         }
 
         public static Tensor operator -(Tensor tensor)
@@ -26,10 +42,24 @@ namespace Rein
         {
             return new Mul().Forward(tensor1, tensor2);
         }
+        public static Tensor operator *(Tensor tensor, R r)
+        {
+            return F.MulConst(tensor, r);
+        }
+        public static Tensor operator *(R r, Tensor tensor)
+        {
+            return F.MulConst(tensor, r);
+        }
 
         public static Tensor operator /(Tensor tensor1, Tensor tensor2)
         {
             return new Div().Forward(tensor1, tensor2);
+        }
+        public static Tensor operator /(Tensor tensor, R r){
+            return (1 / r) * tensor;
+        }
+        public static Tensor operator /(R r, Tensor tensor){
+            return F.DivConst(tensor, r);
         }
 
         public static implicit operator Tensor(Tensor[] tensor1)
