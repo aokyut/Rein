@@ -6,20 +6,23 @@ namespace Rein.Functions
     public abstract class BaseFunction: IFunction
     {
         protected Tensor[] Inputs, Outputs;
-        public Tensor[] Params = new Tensor[]{};
+        public List<Tensor> Params = new List<Tensor>();
         protected int UseCount = 0;
         
         protected Func<Tensor[], Tensor[]> FunctionForward;
         protected Action FunctionBackward;
         
         protected string Name;
+        public bool RequireGrad;
 
-        public BaseFunction(string name){
+        public BaseFunction(string name, bool requireGrad = true){
             this.Name = name;
+            this.RequireGrad = requireGrad;
         }
 
         public virtual Tensor[] Forward(params Tensor[] inputs)
         {
+            if (!this.RequireGrad) return this.Predict(inputs);
             foreach (Tensor input in inputs){
                 input.UseCount++;
             }
@@ -48,10 +51,18 @@ namespace Rein.Functions
             }
         }
 
-        public Tensor[] Parameters{
+        public List<Tensor> Parameters{
             get{
                 return this.Params;
             }
+        }
+
+        public void Train(){
+            this.RequireGrad = true;
+        }
+    
+        public void Eval(){
+            this.RequireGrad = false;
         }
     }
 }
