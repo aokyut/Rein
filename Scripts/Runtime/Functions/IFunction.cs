@@ -1,4 +1,5 @@
 ﻿using Rein;
+using System.Collections.Generic;
 
 namespace Rein.Functions
 {
@@ -9,6 +10,9 @@ namespace Rein.Functions
         public Tensor[] Predict(params Tensor[] inputs);
         public void Backward();
 
-        public Tensor[] Parameters {get; }
+        public List<Tensor> Parameters {get; }
+
+        public void Train();
+        public void Eval();
     }
 }
