@@ -1,44 +1,46 @@
 using Rein.Functions;
 using System.Linq;
+using System.Collections.Generic;
+using Rein.Functions.Arithmetic;
+using Rein.Functions.Process;
 
 namespace Rein.Functions.Layer{
-    public class Linear: UnaryFunction{
+    public class Linear: BaseFunction{
         public Tensor Weight, Bias;
-        public IFunction Activation;
 
-        public Linear(int inputSize, int outputSize, bool bias = true, IFunction activation = null): base("Linear"){
+        public Linear(int inputSize, int outputSize, bool bias = true): base("Linear"){
             this.Weight = new Tensor(new int[]{inputSize, outputSize});
-            this.Activation = activation;
 
             if (bias){
                 this.Bias = new Tensor(new int[]{outputSize});
             }
 
-            this.Params = new Tensor[]{Weight, Bias};
+            this.Params = new List<Tensor>(){Weight, Bias};
+            this.FunctionBackward = this.LinearBackward;
         }
 
-        protected override Tensor UnaryForward(Tensor tensor)
-        {
-            Tensor outTensor = F.Dot(tensor, this.Weight);
+        public override Tensor[] Forward(Tensor[] tensors){
+            return this.LinearForward(tensors, requireGrad: true);
+        }
 
+        public override Tensor[] Predict(Tensor[] tensors){
+            return this.LinearForward(tensors, requireGrad: false);
+        }
+
+        public Tensor[] LinearForward(Tensor[] tensors, bool requireGrad){
+            Tensor outTensor = new Dot(){RequireGrad = requireGrad}.Forward(tensors[0], this.Weight);
             if (this.Bias != null){
-                if (outTensor.Shape.Count == 0){
-                    outTensor += this.Bias;
-                }else{
-                    outTensor += this.Bias.Repeat(0, outTensor.Size / outTensor.Shape.Last());
-                }
+                outTensor = new Add(){RequireGrad = requireGrad}.Forward(
+                    outTensor,
+                    new Repeat(0, outTensor.Size / outTensor.Shape.Last()){RequireGrad = requireGrad}.Forward(this.Bias)
+                );
             }
 
-            if (this.Activation != null){
-                return this.Activation.Forward(outTensor);
-            }
-
-            return outTensor;
+            return new Tensor[]{outTensor};
         }
 
-        protected override void UnaryBackward()
-        {
-            // 何もしない
+        public void LinearBackward(){
+
         }
     }
 }
