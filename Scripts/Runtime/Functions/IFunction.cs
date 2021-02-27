@@ -1,14 +1,18 @@
 ﻿using Rein;
+using System.Collections.Generic;
 
 namespace Rein.Functions
 {
     public interface IFunction
     {
-        public Tensor[] Forward(params Tensor[] inputs);
+        Tensor[] Forward(params Tensor[] inputs);
 
-        public Tensor[] Predict(params Tensor[] inputs);
-        public void Backward();
+        Tensor[] Predict(params Tensor[] inputs);
+        void Backward();
 
-        public Tensor[] Parameters {get; }
+        List<Tensor> Parameters {get; }
+
+        void Train();
+        void Eval();
     }
 }

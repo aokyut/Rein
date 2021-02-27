@@ -2,6 +2,7 @@ using Rein.Functions;
 using Rein.Functions.Arithmetic;
 using Rein.Functions.Layer;
 using R = System.Double;
+using System;
 
 namespace Rein{
     public static class F{
@@ -86,6 +87,28 @@ namespace Rein{
         // Layer
         public static Tensor Linear(Tensor tensor, int inputSize, int outputSize, bool bias = true){
             return new Linear(inputSize, outputSize, bias).Forward(tensor);
+        }
+
+        // Loss
+        public static Tensor MSELoss(Tensor left, Tensor right){
+            return new Lambda(
+                "MSELoss",
+                (x) => x * x,
+                (x) => 2 * x
+            ).Forward(left - right)[0].Mean();
+        }
+
+        public static Tensor HuberLoss(Tensor left, Tensor right, R delta = 1.0){
+            R deltaSquare = delta * delta / 2;
+            return new Lambda(
+                "HuberLossFunction",
+                new Func<R, R>((x) => 
+                x < -delta ? -delta * x - deltaSquare : 
+                (x > delta ? delta * x - deltaSquare : x * x / 2)),
+                new Func<R, R>((x) => 
+                x < -delta ? -delta :
+                (x > delta ? delta : x))
+                ).Forward(left - right);
         }
     }
 }
