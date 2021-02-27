@@ -12,13 +12,13 @@ namespace Rein.Functions{
 
         protected override Tensor UnaryForward(Tensor tensor)
         {
-            R[] data = new R[this.In.Size];
+            R[] data = new R[tensor.Size];
 
-            for (int i = 0; i < this.In.Size; i++){
-                data[i] = this.LambdaForward(this.In.Data[i]);
+            for (int i = 0; i < tensor.Size; i++){
+                data[i] = this.LambdaForward(tensor.Data[i]);
             }
 
-            return new Tensor(data, new List<int>(this.In.Shape));
+            return new Tensor(data, new List<int>(tensor.Shape));
         }
 
         protected override void UnaryBackward()
